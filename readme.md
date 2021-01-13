@@ -4,7 +4,8 @@ Raceroom Ranked server viewer is a viewer that enables you to check the availabl
 
 ##Instalation
 
-    Node is required to run this software
+    Node is required to run this software 
+    [Node Js](https://nodejs.org/en/download/)
 
     ```
         cd server
