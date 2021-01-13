@@ -1,26 +1,23 @@
-#Raceroom Ranked server viewer
+#Raceroom Server Ui
 
-Raceroom Ranked server viewer is a viewer that enables you to check the available ranked servers of raceroom outside of the game.
+A app to check ranked servers data
 
 ##Instalation
 
-    Node is required to run this software 
-    [Node Js](https://nodejs.org/en/download/)
++Node Js installed [Node JS](https://nodejs.org/en/download/)
 
-    ```
-        cd server
-        npm i
-        npm start
-    ```
+```
+cd server
+npm i
+```
 
 ##Usage
-    
-From the Project folder launch a powershell window.
-    ```
-        cd server
-        npm start
-    ```
-    Use your favourite browser to acess [localhost:3500](http://localhost:3500)
 
-    And there you are set to race.
++Start a command line on the project folder
 
+```
+cd server
+npm start
+```
+
++ Access [http://localhost:3500](http://localhost:3500)
