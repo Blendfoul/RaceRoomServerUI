@@ -190,8 +190,8 @@ const fillTemplateData = async (data, tracks, key) => {
                         </tr>
                     </thead>
                     <tbody>
-                    ${driverData.sort((a, b) => b.Rating - a.Rating).map(driver => `
-                            <tr>
+                    ${driverData.sort((a, b) => b.Reputation - a.Reputation).map((driver, key) => `
+                            <tr class="${key === 0 ? "bg-success" : key === driverData.length - 1 ? "bg-warning" : ""}">
                                 <td>${driver.Fullname}</td>
                                 <td>${driver.Rating}</td>
                                 <td>${driver.Reputation}</td>
