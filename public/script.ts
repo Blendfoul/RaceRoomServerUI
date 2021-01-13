@@ -32,8 +32,8 @@ const timerData = (distance, target) => {
     timerContainer.push(timer);
 }
 
-const fetchDriverData = async (drivers): Promise<Driver[]> => {
-    const data: Driver[] = [];
+const fetchDriverData = async (drivers): Promise<DriverRating[]> => {
+    const data: DriverRating[] = [];
 
     for (const value of drivers) {
         const driver = await fetchServerData(`/userId/${value}`);
@@ -53,11 +53,10 @@ const fillTemplateData = async (data: Server, tracks: Track[], key) => {
         case 768: session = "Race"; border = "danger"; break;
     }
     
-    console.log(data.Server.Settings.ServerName)
     let trackDetails: Track;
     trackDetails = tracks.find(value => (data.Server.Settings.TrackLayoutId[0] - 1 === value.cid || data.Server.Settings.TrackLayoutId[0] - 2 === value.cid));
 
-    const driverData: Driver[] = await fetchDriverData(data.Server.Players);
+    const driverData: DriverRating[] = await fetchDriverData(data.Server.Players);
 
     let sof = 0, rep = 0;
     driverData.map(driver => {sof += driver.Rating; rep += driver.Reputation});
@@ -192,7 +191,6 @@ const fillTemplateData = async (data: Server, tracks: Track[], key) => {
                 <table class="table">
                     <thead>
                         <tr>
-                        <th scope="col"></th>
                         <th scope="col">Name</th>
                         <th scope="col">Rating</th>
                         <th scope="col">Reputation</th>
@@ -201,8 +199,7 @@ const fillTemplateData = async (data: Server, tracks: Track[], key) => {
                     <tbody>
                     ${driverData.sort((a, b) => b.Rating - a.Rating).map(driver => `
                             <tr>
-                                <th scope="row"><img class="img-fluid" style="width: 50px" src="${driver.Avatar}" /></th>
-                                <td>${driver.Name}</td>
+                                <td>${driver.Fullname}</td>
                                 <td>${driver.Rating}</td>
                                 <td>${driver.Reputation}</td>
                             </tr>

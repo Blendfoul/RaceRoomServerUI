@@ -15,15 +15,27 @@ app.use(cors());
 
 app.use('/', express.static(path.join(__dirname, "..", 'public')));
 
+let driverRatings = null;
+
 app.get('/', (req, res) => {
-    try {
+    try {   
         res.sendFile('index.html');
     } catch (e) {
         res.status(500).send(e.message);
     }
 });
 
-app.get("/server/:region", (req, res) => {
+setInterval(async () => {
+    const response = await axios.get('http://game.raceroom.com/multiplayer-rating/ratings.json', cors());
+    driverRatings = await response.data;
+}, 300000);
+
+app.get("/server/:region", async (req, res) => {
+    if(driverRatings == null) {
+        const response = await axios.get('http://game.raceroom.com/multiplayer-rating/ratings.json', cors());
+        driverRatings = await response.data;
+    }
+    
     axios.get("http://game.raceroom.com/multiplayer-rating/servers/", cors())
         .then(data => {
             try {
@@ -40,6 +52,9 @@ app.get("/server/:region", (req, res) => {
                         break;
                     case 4:
                         region = "Oceania";
+                        break;
+                    case 5:
+                        region = "Rating";
                         break;
                     default: 
                         region = "All";
@@ -61,22 +76,13 @@ app.get("/server/:region", (req, res) => {
         .catch(e => console.error(e));
 })
 
-app.get('/userId/:userId', (req, res) => {
-    axios.get('http://game.raceroom.com/users/' + req.params.userId + "/career?json", cors())
-        .then(data => {
-            try {
-                const driver = {
-                    Avatar: data.data.context.c.avatar,
-                    Name: data.data.context.c.name,
-                    Rating: data.data.context.c.raceList.GetUserMpRatingProgressResult.Entries[data.data.context.c.raceList.GetUserMpRatingProgressResult.Entries.length - 1].RatingAfter,
-                    Reputation: data.data.context.c.raceList.GetUserMpRatingProgressResult.Entries[data.data.context.c.raceList.GetUserMpRatingProgressResult.Entries.length - 1].ReputationAfter,
-                };
-                res.send(CircularJSON.stringify(driver));
-            } catch (e) {
-                res.status(500).send(e.message);
-            }
-        })
-        .catch((error) => console.log(error.message));
+app.get('/userId/:userId', async (req, res) => {
+    try {
+        const driver = driverRatings.find((driver) => driver.UserId === parseInt(req.params.userId));
+        res.send(JSON.stringify(driver))
+    } catch (e) {
+        res.status(500).send(e.message);
+    }
 });
 
 app.get('/server/content/:address', (req, res) => {
