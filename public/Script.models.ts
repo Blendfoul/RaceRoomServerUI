@@ -76,9 +76,12 @@ interface Track {
     "cid": number
 }
 
-interface Driver {
-    Name: string;
+interface DriverRating {
+    UserId: number;
+    Username: string;
+    Fullname: string;
     Rating: number;
+    Activity: number;
+    RacesCompleted: number;
     Reputation: number;
-    Avatar: string;
 }

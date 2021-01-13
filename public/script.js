@@ -49,7 +49,6 @@ const fillTemplateData = async (data, tracks, key) => {
             border = "danger";
             break;
     }
-    console.log(data.Server.Settings.ServerName);
     let trackDetails;
     trackDetails = tracks.find(value => (data.Server.Settings.TrackLayoutId[0] - 1 === value.cid || data.Server.Settings.TrackLayoutId[0] - 2 === value.cid));
     const driverData = await fetchDriverData(data.Server.Players);
@@ -185,17 +184,15 @@ const fillTemplateData = async (data, tracks, key) => {
                 <table class="table">
                     <thead>
                         <tr>
-                        <th scope="col"></th>
                         <th scope="col">Name</th>
                         <th scope="col">Rating</th>
                         <th scope="col">Reputation</th>
                         </tr>
                     </thead>
                     <tbody>
-                    ${driverData.sort((a, b) => b.Rating - a.Rating).map(driver => `
-                            <tr>
-                                <th scope="row"><img class="img-fluid" style="width: 50px" src="${driver.Avatar}" /></th>
-                                <td>${driver.Name}</td>
+                    ${driverData.sort((a, b) => b.Reputation - a.Reputation).map((driver, key) => `
+                            <tr class="${key === 0 ? "bg-success" : key === driverData.length - 1 ? "bg-warning" : ""}">
+                                <td>${driver.Fullname}</td>
                                 <td>${driver.Rating}</td>
                                 <td>${driver.Reputation}</td>
                             </tr>
