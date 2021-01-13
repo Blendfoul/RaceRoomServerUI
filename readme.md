@@ -13,7 +13,8 @@ Raceroom Ranked server viewer is a viewer that enables you to check the availabl
     ```
 
 ##Usage
-    From the Project folder launch a powershell window.
+    
+From the Project folder launch a powershell window.
     ```
         cd server
         npm start
