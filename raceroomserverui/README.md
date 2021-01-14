@@ -2,22 +2,10 @@
 
 A app to check ranked servers data
 
-## Instalation
-
-+ Node Js installed [Node JS](https://nodejs.org/en/download/)
-
-```
-cd server
-npm i
-```
-
 ## Usage
 
-+ Start a command line on the project folder
-
-```
-cd server
-npm start
-```
-
-+ Access [http://localhost:3500](http://localhost:3500)
++ Download the executable from [Here](https://github.com/Blendfoul/RaceRoomServerUI/raw/master/raceroomserverui/executables/raceroomserverui.zip)
++ Unzip the executable folder
++ Run the executable
++ Access [http://localhost:8080](http://localhost:8080)
++ Enjoy! 
