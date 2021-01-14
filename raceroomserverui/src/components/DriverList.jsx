@@ -27,8 +27,8 @@ const DriverList = props => {
                     {
                         props.drivers
                             .sort((a, b) => b.Rating - a.Rating)
-                            .map(driver =>
-                                <tr>
+                            .map((driver, index) =>
+                                <tr key={"driver-"+ index}>
                                     <td>{driver.Fullname}</td>
                                     <td>{driver.Rating}</td>
                                     <td>{driver.Reputation}</td>

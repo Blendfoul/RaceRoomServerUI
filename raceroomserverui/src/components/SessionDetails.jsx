@@ -1,10 +1,12 @@
 import React, {useState, useEffect} from 'react';
 import {Button, Col, Collapse, Row} from "reactstrap";
 import Countdown from "react-countdown";
+import CarClasses from "./CarClasses";
 
 const SessionDetails = props => {
     const [isOpen, setIsOpen] = useState(false);
     const [session, setSession] = useState("");
+    const [timeLeft] = useState(Date.now() + props.timeLeft);
     const toggle = () => setIsOpen(!isOpen);
 
     useEffect(() => {
@@ -14,9 +16,7 @@ const SessionDetails = props => {
             case 768: setSession("Race"); break;
             default: setSession("Unknown"); break;
         }
-    }, [props.currentSession]);
-
-
+    }, []);
 
     return (
         <Row>
@@ -31,7 +31,7 @@ const SessionDetails = props => {
                     </Col>
                     <Col xs={6} className={"d-flex flex-column justify-content-start align-items-center"}>
                         <h6 className="text-center font-weight-bold">Time Left</h6>
-                        <Countdown className={"text-center"} date={Date.now() + props.timeLeft}/>
+                        <Countdown className={"text-center"} date={timeLeft}/>
                     </Col>
                 </Row>
                 <Row>
@@ -69,6 +69,7 @@ const SessionDetails = props => {
                         <p className="text-center">{props.session.FuelUsage}x</p>
                     </Col>
                 </Row>
+                <CarClasses liveries={props.session.LiveryId} />
             </Collapse>
         </Row>
     )

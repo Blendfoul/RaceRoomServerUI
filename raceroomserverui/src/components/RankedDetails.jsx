@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Col, Row} from "reactstrap";
+import {Col, Row, Spinner} from "reactstrap";
 import axios from "axios";
 import DriverList from "./DriverList";
 
@@ -10,21 +10,9 @@ const RankedDetails = props => {
     useEffect(() => {
         const fetchDetails = async () => {
             await setIsLoading(true);
-            const data = [];
 
-            for (const value of props.drivers) {
-                const driver = await axios(`/userId/${value}`);
-                data.push(driver.data);
-            }
-
-            let sof = 0, rep = 0;
-            data.forEach(driver => {sof += driver.Rating; rep += driver.Reputation});
-            if(sof !== 0) {
-                sof /= data.length;
-                rep /= data.length;
-            }
-
-            setDrivers({sof: sof, rep: rep, joined: data});
+            const data = await axios(`/userId/${encodeURIComponent(JSON.stringify(props.drivers))}`);
+            setDrivers(data.data);
 
             await setIsLoading(false);
         }
@@ -32,24 +20,32 @@ const RankedDetails = props => {
         fetchDetails();
     }, [props.drivers]);
 
-    return(
-        <div>
-            <Row className="justify-content-center">
-                <Col xs={4}>
-                    <h6 className="text-center font-weight-bold">Players Connected</h6>
-                    <p className="text-center">{props.players}</p>
-                </Col>
-                <Col xs={4}>
-                    <h6 className="text-center font-weight-bold">SoF</h6>
-                    <p className="text-center">{drivers.sof.toFixed(3)}</p>
-                </Col>
-                <Col xs={4}>
-                    <h6 className="text-center font-weight-bold">Average Rep.</h6>
-                    <p className="text-center">{drivers.rep.toFixed(3)}</p>
+    return (
+        isLoading
+            ?
+            <Row>
+                <Col className="d-flex justify-content-center">
+                    <Spinner style={{width: '3rem', height: '3rem'}}/>{' '}
                 </Col>
             </Row>
-            <DriverList drivers={drivers.joined} />
-        </div>
+            :
+            <div>
+                <Row className="justify-content-center">
+                    <Col xs={4}>
+                        <h6 className="text-center font-weight-bold">Players Connected</h6>
+                        <p className="text-center">{props.players}</p>
+                    </Col>
+                    <Col xs={4}>
+                        <h6 className="text-center font-weight-bold">SoF</h6>
+                        <p className="text-center">{drivers.sof.toFixed(3)}</p>
+                    </Col>
+                    <Col xs={4}>
+                        <h6 className="text-center font-weight-bold">Average Rep.</h6>
+                        <p className="text-center">{drivers.rep.toFixed(3)}</p>
+                    </Col>
+                </Row>
+                <DriverList drivers={drivers.drivers}/>
+            </div>
     )
 };
 

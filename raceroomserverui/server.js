@@ -3,7 +3,7 @@ const axios = require("axios");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const CircularJSON = require("circular-json");
-const path = require('path')
+const path = require('path');
 const fs = require("fs");
 
 const app = express();
@@ -14,6 +14,7 @@ app.use(cors());
 // call the API
 
 app.use(express.static(path.join(__dirname, 'build')));
+app.use(express.static(path.join(__dirname, 'assets')));
 
 let driverRatings = null;
 
@@ -73,38 +74,75 @@ app.get("/server/:region", async (req, res) => {
                 res.status(500).send(e.message);
             }
         })
-        .catch(e => console.error(e));
+        .catch(e => {
+            console.error(e.message)
+            res.status(500);
+        });
 })
 
 app.get('/userId/:userId', async (req, res) => {
     try {
-        const driver = driverRatings.find((driver) => driver.UserId === parseInt(req.params.userId));
-        driver.maxRep = driver.minRep = false;
-        res.send(JSON.stringify(driver))
+        const driverArray = JSON.parse(decodeURIComponent(req.params.userId));
+
+        const data = {
+            drivers: [],
+            sof: 0,
+            rep: 0
+        };
+
+        driverArray.forEach(driver => {
+            const newData = driverRatings.find((value) => value.UserId === driver)
+            if(newData !== undefined)
+                data.drivers.push(newData);
+        })
+
+        if(data.drivers.length > 0) {
+            data.drivers.forEach(driver => {
+                if (driver !== undefined) {
+                    data.sof += driver.Rating;
+                    data.rep += driver.Reputation;
+                }
+            })
+
+            data.sof /= data.drivers.length;
+            data.rep /= data.drivers.length;
+        }
+
+        res.send(JSON.stringify(data))
     } catch (e) {
-        res.status(500).send(e.message);
+        console.error(e.message)
+        res.status(500);
     }
 });
 
-app.get('/server/content/:address', (req, res) => {
-    try {
-        if (req.params.address !== null)
-            axios.get(`http://${req.params.address}/content/all`, cors())
-                .then(data => {
-                    res.send(CircularJSON.stringify(data.data))
-                })
-                .catch((error) => console.log(error.message));
-    } catch (e) {
-        res.status(500).send(e.message);
-    }
+app.get('/tracks', (req, res) => {
+    let rawdata = fs.readFileSync('assets/r3e-data.json');
+    let data = JSON.parse(rawdata);
+    res.send(CircularJSON.stringify(data.tracks))
 })
 
-app.get('/tracks', (req, res) => {
-    axios.get('http://game.raceroom.com/store/tracks/all?json', cors())
+app.get("/tracks/image/:trackId", ((req, res) => {
+    axios.get("https://game.raceroom.com/store/tracks/all/" + req.params.trackId + "?json", cors())
         .then(data => {
-            res.send(CircularJSON.stringify(data.data.context.c.sections['0'].items))
+            res.send(CircularJSON.stringify(data.data.context.c.item.image.logo))
         })
-        .catch(e => res.status(500).send(e.message));
-})
+        .catch(e => console.error(e));
+}));
+
+app.get('/classes/:liveryArray', ((req, res) => {
+    try {
+        let rawdata = fs.readFileSync('assets/r3e-data.json');
+        let data = JSON.parse(rawdata);
+        const classes = data.classes;
+
+        const liveryArray = JSON.parse(decodeURIComponent(req.params.liveryArray));
+
+        const classAvailable = [];
+
+        res.send(CircularJSON.stringify(classAvailable));
+    } catch (e) {
+        res.status(500);
+    }
+}));
 
 app.listen(8080, () => console.log("Server started at 8080"));

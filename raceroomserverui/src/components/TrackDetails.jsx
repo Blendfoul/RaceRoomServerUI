@@ -9,6 +9,22 @@ const TrackDetails = props => {
 
     const toggle = () => setIsOpen(!isOpen);
 
+    const trackLayout = async (tracks) => {
+        let trackData = undefined;
+
+        for (const track in tracks) {
+            trackData = tracks[track].layouts.find(value => value.Id === props.id);
+            if( trackData !== undefined)
+                break;
+        }
+
+        const response = await axios("/tracks/image/" + tracks[`${trackData?.Track}`].Name.replace(" ", "-").toLowerCase());
+
+        const logo = response.data;
+
+        return {track: tracks[`${trackData?.Track}`], layout: trackData, logo: logo};
+    };
+
     useEffect(() => {
         const fetchDetails = async () => {
             await setIsLoading(true);
@@ -16,7 +32,7 @@ const TrackDetails = props => {
 
             const data = await response.data;
 
-            const trackDetails = data.find(value => (props.id - 1 === value.cid || props.id - 2 === value.cid));
+            const trackDetails = await trackLayout(data);
 
             setDetails(trackDetails);
             await setIsLoading(false);
@@ -42,16 +58,16 @@ const TrackDetails = props => {
                     :
                     <div>
                         <Row className={"justify-content-center"}>
-                            <img src={details.image.logo} className={"img-fluid w-25"} alt={details.content_info.name}/>
+                            <img src={details.logo} className={"img-fluid w-25"} alt={details.track.Name}/>
                         </Row>
                         <Row>
                             <Col xs={6}>
                                 <h6 className="text-center font-weight-bold">Name</h6>
-                                <p className="text-center">{details.content_info.name}</p>
+                                <p className="text-center">{details.track.Name}</p>
                             </Col>
                             <Col xs={6}>
-                                <h6 className="text-center font-weight-bold">Country</h6>
-                                <p className="text-center">{details.content_info.country.name}</p>
+                                <h6 className="text-center font-weight-bold">Layout</h6>
+                                <p className="text-center">{details.layout.Name}</p>
                             </Col>
                         </Row>
                         <Row>
