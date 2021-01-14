@@ -1,7 +1,0 @@
-{
-    "compileOnSave": true,
-    "compilerOptions": {
-        "target": "ESNext",
-        "watch": true
-    } 
-}
