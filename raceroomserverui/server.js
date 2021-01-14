@@ -133,13 +133,21 @@ app.get('/classes/:liveryArray', ((req, res) => {
     try {
         let rawdata = fs.readFileSync('assets/r3e-data.json');
         let data = JSON.parse(rawdata);
-        const classes = data.classes;
+        const classes = data.cars;
 
         const liveryArray = JSON.parse(decodeURIComponent(req.params.liveryArray));
+        const classAvailable = new Set();
 
-        const classAvailable = [];
+            liveryArray.forEach(value => {
+                for (const key in classes) {
+                    const data = classes[key].liveries.find(val => value === val.Id);
+                    if(data !== undefined) {
+                        classAvailable.add(data.Class);
+                    }
+                }
+            });
 
-        res.send(CircularJSON.stringify(classAvailable));
+        res.send(CircularJSON.stringify([...classAvailable]));
     } catch (e) {
         res.status(500);
     }
