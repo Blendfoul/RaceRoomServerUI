@@ -35,7 +35,8 @@ const Race = props => {
                                   maxPlayers={props.data.Server.Settings.MaxNumberOfPlayers}/>
                     <hr/>
                     <SessionDetails session={props.data.Server.Settings}
-                                    currentSession={props.data.Server.CurrentSession}/>
+                                    currentSession={props.data.Server.CurrentSession}
+                                    timeLeft={props.data.Server.TimeLeft}/>
                     <hr/>
                     <RankedDetails players={props.data.Server.PlayersOnServer} drivers={props.data.Server.Players}/>
                 </CardBody>

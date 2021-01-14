@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {Button, Col, Collapse, Row} from "reactstrap";
+import Countdown from "react-countdown";
 
 const SessionDetails = props => {
     const [isOpen, setIsOpen] = useState(false);
@@ -15,6 +16,8 @@ const SessionDetails = props => {
         }
     }, [props.currentSession]);
 
+
+
     return (
         <Row>
             <Button color={"default"} block={true} onClick={toggle}>
@@ -22,13 +25,13 @@ const SessionDetails = props => {
             </Button>
             <Collapse isOpen={isOpen} className={"w-100"}>
                 <Row className={"mt-3"}>
-                    <Col xs={6}>
+                    <Col xs={6} >
                         <h6 className="text-center font-weight-bold">Session</h6>
                         <p className="text-center">{session}</p>
                     </Col>
-                    <Col xs={6}>
+                    <Col xs={6} className={"d-flex flex-column justify-content-start align-items-center"}>
                         <h6 className="text-center font-weight-bold">Time Left</h6>
-                        <p className="text-center">{}</p>
+                        <Countdown className={"text-center"} date={Date.now() + props.timeLeft}/>
                     </Col>
                 </Row>
                 <Row>
