@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import {Button, Col, Collapse, Row, Table} from "reactstrap";
+import DriverItem from "./DriverItem";
 
 const DriverList = props => {
     const [isOpen, setIsOpen] = useState(false);
@@ -21,19 +22,12 @@ const DriverList = props => {
                         <th scope="col">Name</th>
                         <th scope="col">Rating</th>
                         <th scope="col">Reputation</th>
+                        <th scope={"col"}></th>
                     </tr>
                     </thead>
                     <tbody>
                     {
-                        props.drivers
-                            .sort((a, b) => b.Rating - a.Rating)
-                            .map((driver, index) =>
-                                <tr key={"driver-"+ index}>
-                                    <td>{driver.Fullname}</td>
-                                    <td>{driver.Rating}</td>
-                                    <td>{driver.Reputation}</td>
-                                </tr>
-                            )
+                        props.drivers.map((driver, index) => <DriverItem key={index} driver ={driver}/>)
                     }
                     </tbody>
                 </Table>
