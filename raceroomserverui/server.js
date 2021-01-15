@@ -26,11 +26,6 @@ app.get('/', (req, res) => {
     }
 });
 
-setInterval(async () => {
-    const response = await axios.get('http://game.raceroom.com/multiplayer-rating/ratings.json', cors());
-    driverRatings = await response.data;
-}, 300000);
-
 app.get("/server/:region", async (req, res) => {
     if(driverRatings == null) {
         const response = await axios.get('http://game.raceroom.com/multiplayer-rating/ratings.json', cors());
@@ -65,6 +60,7 @@ app.get("/server/:region", async (req, res) => {
                 if (region !== "All") {
                     const response = { result: [] };
                     response.result = data.data.result.filter(server => server.Server.Settings.ServerName.includes(region));
+                    response.result.sort((a, b) => a.Server.Settings.ServerName.localeCompare(b.Server.Settings.ServerName))
                     res.send(CircularJSON.stringify(response));
                 }
                 else {
@@ -106,6 +102,8 @@ app.get('/userId/:userId', async (req, res) => {
 
             data.sof /= data.drivers.length;
             data.rep /= data.drivers.length;
+
+            data.drivers.sort((a, b) => b.Rating - a.Rating);
         }
 
         res.send(JSON.stringify(data))
@@ -152,5 +150,38 @@ app.get('/classes/:liveryArray', ((req, res) => {
         res.status(500);
     }
 }));
+
+app.get('/user/:userName', async (req, res) => {
+    try {
+        const response = await axios.get(`http://game.raceroom.com/users/${req.params.userName}/career?json`);
+
+        const driverData = {
+            avatar: response.data.context.c.avatar,
+            team: response.data.context.c.team,
+            name: response.data.context.c.name,
+            competition_rank: response.data.context.c.competition_rank,
+            raceList: response.data.context.c.raceList.GetUserMpRatingProgressResult.Entries.reverse(),
+            totalRaces: response.data.context.c.raceList.GetUserMpRatingProgressResult.TotalEntries,
+            rank: response.data.context.c.competition_rank
+        };
+
+        res.send(JSON.stringify(driverData));
+    } catch (e) {
+        console.error(e.message);
+        res.status(404);
+    }
+
+});
+
+app.get('/ratings', async (req, res) => {
+    const response = await axios.get('http://game.raceroom.com/multiplayer-rating/ratings.json', cors());
+
+    const data = {
+        data: response.data,
+        total: response.data.length
+    };
+
+    res.send(CircularJSON.stringify(data));
+});
 
 app.listen(8080, () => console.log("Server started at 8080"));

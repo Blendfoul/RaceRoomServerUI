@@ -9,16 +9,29 @@ const RaceContainer = () => {
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
-        const fetchData = async () => {
-            setIsLoading(true);
-            const response = await axios(`/server/${data.region}`);
+        const source = axios.CancelToken.source();
 
-            const races = await response.data.result;
-            setData({...data, races: races});
-            setIsLoading(false);
+        const fetchData = async () => {
+            try {
+                setIsLoading(true);
+                const response = await axios(`/server/${data.region}`, {
+                    cancelToken: source.token,
+                });
+
+                const races = await response.data.result;
+                setData({...data, races: races});
+                setIsLoading(false);
+            } catch (e) {
+
+            }
+
         };
 
-        fetchData();
+        fetchData()
+
+        return () => {
+            source.cancel()
+        }
     }, [data.region]);
 
     return (

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Button, Card, CardBody, CardFooter, Col, Row} from "reactstrap";
+import {Button, Card, CardBody, CardFooter, Col, ListGroup, ListGroupItem} from "reactstrap";
 import TrackDetails from "./TrackDetails";
 import SessionDetails from "./SessionDetails";
 import RankedDetails from "./RankedDetails";
@@ -22,23 +22,26 @@ const Race = props => {
             <Card className={"my-2 border-" + border}>
                 <img src={props.data.Server.Settings.Thumbnail} className="card-img-top"
                      alt={props.data.Server.Settings.ServerName}/>
-                <CardBody>
-                    <Row>
-                        <Col>
+                <CardBody className={""}>
+                    <ListGroup flush>
+                        <ListGroupItem>
                             <h4 className="text-center">
                                 {props.data.Server.Settings.ServerName}
                             </h4>
-                        </Col>
-                    </Row>
-                    <hr/>
-                    <TrackDetails id={props.data.Server.Settings.TrackLayoutId[0]}
+                        </ListGroupItem>
+                        <ListGroupItem>
+                            <TrackDetails id={props.data.Server.Settings.TrackLayoutId[0]}
                                   maxPlayers={props.data.Server.Settings.MaxNumberOfPlayers}/>
-                    <hr/>
-                    <SessionDetails session={props.data.Server.Settings}
-                                    currentSession={props.data.Server.CurrentSession}
-                                    timeLeft={props.data.Server.TimeLeft}/>
-                    <hr/>
-                    <RankedDetails players={props.data.Server.PlayersOnServer} drivers={props.data.Server.Players}/>
+                        </ListGroupItem>
+                        <ListGroupItem>
+                            <SessionDetails session={props.data.Server.Settings}
+                                currentSession={props.data.Server.CurrentSession}
+                                timeLeft={props.data.Server.TimeLeft}/>
+                        </ListGroupItem>
+                        <ListGroupItem>
+                            <RankedDetails players={props.data.Server.PlayersOnServer} drivers={props.data.Server.Players}/>
+                        </ListGroupItem>
+                    </ListGroup>
                 </CardBody>
                 <CardFooter>
                     {

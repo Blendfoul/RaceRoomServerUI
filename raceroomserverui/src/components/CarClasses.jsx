@@ -6,14 +6,25 @@ const CarClasses = props => {
     const [classes, setClasses] = useState([]);
 
     useEffect(() => {
-        const fetchClasses = async () => {
-            const response = await axios("classes/" + encodeURIComponent(JSON.stringify(props.liveries)));
-            const data = response.data
+        const source = axios.CancelToken.source();
 
-            setClasses(data);
+        const fetchClasses = async () => {
+            try {
+                const response = await axios("classes/" + encodeURIComponent(JSON.stringify(props.liveries)), {
+                    cancelToken: source.token,
+                });
+                const data = response.data
+
+                setClasses(data);
+            } catch (e) {
+
+            }
         };
 
         fetchClasses();
+        return () => {
+            source.cancel()
+        }
     }, []);
 
     return (
